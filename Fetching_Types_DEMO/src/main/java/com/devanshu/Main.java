@@ -1,17 +1,33 @@
 package com.devanshu;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import java.util.Collection;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Configuration config = new Configuration().configure().addAnnotatedClass(Laptop.class).addAnnotatedClass(Alien.class);
+        SessionFactory sf = config.buildSessionFactory();
+        Session session = sf.openSession();
+        session.beginTransaction();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+
+        // LAZY FETCHING
+//        Alien a1 = session.getReference(Alien.class , 1);
+//        Collection<Laptop> laps = a1.getLaps();
+//
+//        for (Laptop l : laps){
+//            System.out.println(l);
+//        }
+
+        // EAGER FETCHING
+        Alien a1 = session.getReference(Alien.class , 1);
+        Collection<Laptop> laps = a1.getLaps();
+        System.out.println(a1.getAid());
+
+        session.getTransaction().commit();
+
     }
 }
